@@ -1,0 +1,151 @@
+<?php 
+global $mosportfolio_options;
+$animation = $mosportfolio_options['sections-portfolio-animation'];
+$animation_delay = ( $mosportfolio_options['sections-portfolio-animation-delay'] ) ? $mosportfolio_options['sections-portfolio-animation-delay'] : 0;
+$title = $mosportfolio_options['sections-portfolio-title'];
+$content = $mosportfolio_options['sections-portfolio-content'];
+
+
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+if ( is_plugin_active( 'mos-image-alt/mos-image-alt.php' ) ) {
+	$alt_tag = mos_alt_generator(get_the_ID());
+} 
+$page_details = array( 'id' => get_the_ID(), 'template_file' => basename( get_page_template() ));
+do_action( 'action_avobe_portfolio', $page_details ); 
+?>
+<section id="section-portfolio" <?php if ($animation) echo 'data-wow-delay="'.$animation_delay.'s" class="wow '.$animation.'"' ?>>
+	<div class="content-wrap">
+		
+		<?php 
+		/*
+		* action_before_portfolio hook
+		* @hooked start_container 10 (output .container)
+		*/
+		do_action( 'action_before_portfolio', $page_details ); 
+		?>
+				<?php if ($title) : ?>				
+					<div class="title-wrapper">
+						<h2 class="title"><?php echo do_shortcode( $title ); ?></h2>				
+					</div>
+				<?php endif; ?>
+				<?php if ($content) : ?>				
+					<div class="content-wrapper"><?php echo do_shortcode( $content ) ?></div>
+				<?php endif; ?>
+				
+				<div id="timelineClock"></div>		
+				<div id="timeline"></div>		
+	<?php 
+		/*
+		* action_after_portfolio hook
+		* @hooked end_div 10 
+		*/
+		do_action( 'action_after_portfolio', $page_details ); 
+		?>	
+	</div>
+</section>
+<?php do_action( 'action_below_portfolio', $page_details  ); ?>
+<script>
+jQuery(document).ready(function($) {
+
+		$('#timelineClock').timespace({
+
+			// Set the time suffix function for displaying as '12 A.M.'
+			//timeSuffixFunction: d => ' ' + d[0].toUpperCase() + '.' + d[1].toUpperCase() + '.',
+			selectedEvent: -1,
+			data: {
+				headings: [
+					{start: 'Jan-14', end: 'Dec-14', title: '2014'},
+					{start: 'Jan-15', end: 'Dec-15', title: '2015'},
+					{start: 'Jan-16', end: 'Dec-16', title: '2016'},
+				],
+				events: [
+					{start: 'Jan-14', title: 'Title 2014', description: 'Eat a healthy breakfast.'},
+					{start: 'Feb-14'},
+					{start: 'Mar-14'},
+					{start: 'Apr-14'},
+					{start: 'May-14'},
+					{start: 'Jun-14'},
+					{start: 'Jul-14'},
+					{start: 'Aug-14'},
+					{start: 'Sep-14'},
+					{start: 'Oct-14'},
+					{start: 'Nov-14'},
+					{start: 'Dec-14'},
+					{start: 'Jan-15', title: 'Breakfast', description: 'Eat a healthy breakfast.'},
+					{start: 'Feb-15'},
+					{start: 'Mar-15'},
+					{start: 'Apr-15'},
+					{start: 'May-15'},
+					{start: 'Jun-15'},
+					{start: 'Jul-15'},
+					{start: 'Aug-15'},
+					{start: 'Sep-15'},
+					{start: 'Oct-15'},
+					{start: 'Nov-15'},
+					{start: 'Dec-15'},
+					{start: 'Jan-16', title: 'Breakfast', description: 'Eat a healthy breakfast.'},
+					{start: 'Feb-16'},
+					{start: 'Mar-16'},
+					{start: 'Apr-16'},
+					{start: 'May-16'},
+					{start: 'Jun-16'},
+					{start: 'Jul-16'},
+					{start: 'Aug-16'},
+					{start: 'Sep-16'},
+					{start: 'Oct-16'},
+					{start: 'Nov-16'},
+					{start: 'Dec-16'},
+					/*{start: 8, end: 10, title: 'Walk', description: 'Go for a walk.'},
+					{start: 14, title: 'Lunch', description: 'Eat a healthy lunch.'},
+					{start: 14.75, title: 'Meeting', description: 'Meeting with Co-workers.'},*/
+				]
+			},
+
+		});
+
+		$('#timeline').timespace({
+
+			timeType: 'date',
+			useTimeSuffix: false,
+			startTime: 500,
+			endTime: 2050,
+			markerIncrement: 1,
+			data: {
+				/*headings: [
+					{start: 500, end: 1750, title: 'Dark Ages'},
+					{start: 1750, end: '1917', title: 'Age of Revolution'},
+					{start: 1971, title: 'Information Age'},
+				],*/
+				events: [
+					{start: 1440, title: 'Gutenberg\'s Printing Press', width: 200},
+					{start: 1517, end: 1648, title: 'The Reformation',
+						description: $('<p>The Reformation was a turning point in the history of the world. '
+							+ 'Martin Luther was a key player in this event as he stood up against Papal tyranny '
+							+ 'and church apostasy.</p><p>Many other reformers followed in the steps of Luther '
+							+ 'and followed the convictions of their hearts, even unto death.</p>')},
+					{start: 1773, title: 'Boston Tea Party'},
+					{start: 1775, end: 1783, title: 'American Revolution', description: 'Description:', callback: function () {
+
+						this.container.find('.jqTimespaceDisplay section').append(
+							'<p>This description was brought to you by the callback function. For information on the American Revolution, '
+							+ '<a target="_blank" href="https://en.wikipedia.org/wiki/American_Revolution">visit the Wikipedia page.</a></p>'
+						);
+
+					}},
+					{start: 1789, title: 'French Revolution'},
+					{start: 1914, end: 1918, title: 'World War I', noDetails: true},
+					{start: 1929, end: 1939, title: 'Great Depression',
+						description: 'A period of global economic downturn. Many experienced unemployment and the basest poverty.'
+					},
+				]
+			},
+
+		}, function () {
+
+			// Edit the navigation amount
+			this.navigateAmount = 500;
+
+		});
+
+	});
+</script>

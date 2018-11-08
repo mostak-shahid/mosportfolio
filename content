@@ -1,0 +1,62 @@
+<?php 
+global $mosportfolio_options;
+$grid = $mosportfolio_options['blog-archive-grid'];
+if($grid == '4') { $colsize = 3; }
+elseif($grid == '3') { $colsize = 4; }
+elseif($grid == '2') { $colsize = 6; }
+else { $colsize = 12; }
+if (is_single()) $colsize = 12;
+$n = 1;
+$page_details = array( 'id' => get_the_ID(), 'template_file' => basename( get_page_template() ));
+do_action( 'action_before_blog_page_loop', $page_details );
+?>
+		<div class="row blogs" >
+		<?php while ( have_posts() ) : the_post(); ?>
+			
+			<div class="col-md-<?php echo $colsize?> <?php if ($colsize < 6 ) echo 'col-sm-6';?>">
+
+				<?php 
+				/*
+				* hook action_before_blog_page_loop_item
+				* hooked post_wrapper_start_fnc 10
+				* hooked post_img_container_start_fnc 20
+				*/
+				do_action( 'action_before_blog_page_loop_item', $page_details );
+				?>
+				<?php 
+				/*
+				* hook action_before_blog_page_loop_item_title
+				* hooked post_thumbnail_fnc 10
+				* hooked post_meta_fnc 20
+				* hooked end_div 30
+				*/
+				do_action( 'action_before_blog_page_loop_item_title', $page_details );
+				?>
+				<?php 
+				/*
+				* hook action_blog_page_loop_item_title
+				* hooked action_blog_loop_general_item_title_fnc 10
+				*/
+				do_action( 'action_blog_page_loop_item_title', $page_details ); 
+				?>
+				<?php 
+				/*
+				* hook action_after_blog_page_loop_item_title
+				* hooked action_general_post_content_fnc 10
+				*/
+				do_action( 'action_after_blog_page_loop_item_title', $page_details ); 
+				?>
+				<?php
+				/*
+				* hook action_after_blog_page_loop_item_title
+				* hooked end_div 10
+				*/ 
+				do_action( 'action_after_page_blog_loop_item', $page_details ); 
+				?>
+
+			</div>
+
+			<?php if ($grid > 1 AND $n%$grid == 0) echo '</div><div class="row blogs">'; $n++;?>
+		<?php endwhile;?>
+		</div>
+<?php do_action( 'action_below_blog_page_loop', $page_details );?>
